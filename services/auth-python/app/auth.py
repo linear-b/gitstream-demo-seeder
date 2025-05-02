@@ -7,7 +7,8 @@ router = APIRouter()
 USER_DB = {
     "alice": "password123",
     "bob": "hunter2",
-    "admin": "admin"
+    "admin": "admin",
+    "charlie": "qwerty"
 }
 
 SESSIONS = {}
