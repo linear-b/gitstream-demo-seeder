@@ -43,6 +43,7 @@ public class OrderController {
             String body = authResponse.getBody();
             return body.contains("username") ? body.split(":")[1].replaceAll("[\"{} ]", "") : null;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -56,7 +57,7 @@ public class OrderController {
         payload.put("username", username);
         payload.put("productId", productId);
         payload.put("quantity", quantity);
-        payload.put("date", Instant.now().toString());
+        payload.put("dats", Instant.now().toString());
 
         HttpEntity<String> entity = new HttpEntity<>(payload.toString(), headers);
         try {
@@ -64,6 +65,7 @@ public class OrderController {
                     "http://billing-csharp/billing/charge", entity, String.class);
             return billingResponse.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
