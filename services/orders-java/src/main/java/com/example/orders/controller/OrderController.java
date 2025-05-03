@@ -1,5 +1,6 @@
 package com.example.orders.controller;
 
+import java.time.Instant;
 import com.example.orders.model.OrderRequest;
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -55,6 +56,7 @@ public class OrderController {
         payload.put("username", username);
         payload.put("productId", productId);
         payload.put("quantity", quantity);
+        payload.put("date", Instant.now().toString());
 
         HttpEntity<String> entity = new HttpEntity<>(payload.toString(), headers);
         try {
