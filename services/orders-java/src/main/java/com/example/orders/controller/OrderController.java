@@ -1,6 +1,7 @@
 package com.example.orders.controller;
 
 import java.time.Instant;
+import org.springframework.beans.factory.annotation.Value;
 import com.example.orders.model.OrderRequest;
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -12,6 +13,12 @@ import org.springframework.web.client.RestTemplate;
 public class OrderController {
 
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${AUTH_SERVICE_URL:http://auth-python:8000}")
+    private String authServiceUrl;
+
+    @Value("${BILLING_SERVICE_URL:http://billing-csharp:80}")
+    private String billingServiceUrl;
 
     @PostMapping
     public ResponseEntity<String> placeOrder(@RequestBody OrderRequest request,
@@ -35,7 +42,7 @@ public class OrderController {
     }
 
     protected String validateToken(String token) {
-        String authUrl = "http://auth-python:8000/auth/validate?token=" + token;
+        String authUrl = authServiceUrl + "/auth/validate?token=" + token;
         try {
             ResponseEntity<String> authResponse = restTemplate.getForEntity(authUrl, String.class);
             if (!authResponse.getStatusCode().is2xxSuccessful()) return null;
@@ -62,7 +69,7 @@ public class OrderController {
         HttpEntity<String> entity = new HttpEntity<>(payload.toString(), headers);
         try {
             ResponseEntity<String> billingResponse = restTemplate.postForEntity(
-                    "http://billing-csharp/billing/charge", entity, String.class);
+                billingServiceUrl + "/billing/charge", entity, String.class);
             return billingResponse.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
