@@ -31,3 +31,5 @@ async function placeOrder() {
   const text = await res.text();
   document.getElementById("output").textContent = text;
 }
+
+//TODO add order history
